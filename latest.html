@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drama Terbaru - DramaBox</title>
+    <meta name="description" content="Temukan drama-drama terbaru yang baru saja rilis di DramaBox">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'dramabox-dark': '#1a1a1a',
+                        'dramabox-amber': '#f59e0b',
+                        'dramabox-coral': '#fb7185',
+                        'dramabox-gray': '#6b7280'
+                    },
+                    fontFamily: {
+                        'display': ['Playfair Display', 'serif'],
+                        'body': ['Inter', 'sans-serif'],
+                        'mono': ['JetBrains Mono', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Custom Styles -->
+    <style>
+        :root {
+            --dramabox-dark: #1a1a1a;
+            --dramabox-amber: #f59e0b;
+            --dramabox-coral: #fb7185;
+            --dramabox-gray: #6b7280;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dramabox-dark);
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #2d2d2d;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--dramabox-amber);
+            border-radius: 4px;
+        }
+
+        /* Card Hover Effects */
+        .drama-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+
+        .drama-card:hover {
+            transform: translateY(-8px) rotateX(5deg);
+            box-shadow: 0 20px 40px rgba(245, 158, 11, 0.3);
+        }
+
+        /* Gradient Text */
+        .gradient-text {
+            background: linear-gradient(45deg, var(--dramabox-amber), var(--dramabox-coral));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Button Styles */
+        .btn-primary {
+            @apply bg-dramabox-amber hover:bg-amber-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105;
+        }
+
+        .btn-secondary {
+            @apply bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105;
+        }
+
+        /* Form Styles */
+        .form-input {
+            @apply bg-gray-800 border border-gray-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-dramabox-amber transition-colors;
+        }
+
+        /* Navigation */
+        .nav-link {
+            @apply text-gray-300 hover:text-dramabox-amber transition-colors duration-300 font-medium;
+        }
+
+        .nav-link.active {
+            @apply text-dramabox-amber font-semibold;
+        }
+
+        /* Loading Shimmer */
+        .shimmer {
+            background: linear-gradient(90deg, #2d2d2d 25%, #3d3d3d 50%, #2d2d2d 75%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* Line Clamp */
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-dramabox-dark/95 backdrop-blur-md border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <!-- Logo -->
+                <a href="index.html" class="flex items-center space-x-2">
+                    <div class="w-8 h-8 bg-gradient-to-r from-dramabox-amber to-dramabox-coral rounded-lg flex items-center justify-center">
+                        <span class="text-white font-bold text-sm">D</span>
+                    </div>
+                    <span class="text-xl font-display font-bold gradient-text">DramaBox</span>
+                </a>
+
+                <!-- Desktop Navigation -->
+                <nav class="hidden md:flex items-center space-x-8">
+                    <a href="index.html" class="nav-link">Beranda</a>
+                    <a href="latest.html" class="nav-link active">Terbaru</a>
+                    <a href="popular.html" class="nav-link">Populer</a>
+                    <a href="ranked.html" class="nav-link">Ranking</a>
+                </nav>
+
+                <!-- Search Bar -->
+                <div class="hidden md:block flex-1 max-w-md mx-8">
+                    <div class="relative">
+                        <input
+                            type="text"
+                            placeholder="Cari drama..."
+                            class="form-input w-full pr-12"
+                            id="searchInput"
+                        />
+                        <button
+                            class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-dramabox-amber transition-colors"
+                            onclick="performSearch()"
+                        >
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden p-2 rounded-md text-gray-400 hover:text-white hover:bg-gray-800" onclick="toggleMobileMenu()">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Mobile Menu -->
+            <div id="mobileMenu" class="hidden md:hidden py-4 border-t border-gray-800">
+                <nav class="flex flex-col space-y-3">
+                    <a href="index.html" class="nav-link">Beranda</a>
+                    <a href="latest.html" class="nav-link active">Terbaru</a>
+                    <a href="popular.html" class="nav-link">Populer</a>
+                    <a href="ranked.html" class="nav-link">Ranking</a>
+                    <div class="pt-4">
+                        <input type="text" placeholder="Cari drama..." class="form-input w-full" id="mobileSearchInput">
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <!-- EDIT: tambahkan pt-24 agar tidak menempel di bawah header fixed -->
+    <div class="min-h-screen pt-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Header -->
+            <div class="mb-8">
+                <h1 class="text-4xl font-display font-bold text-white mb-4">Drama Terbaru</h1>
+                <p class="text-gray-400 text-lg">
+                    Temukan drama-drama terbaru yang baru saja rilis dan jangan ketinggalan episode terbaru.
+                </p>
+            </div>
+
+            <!-- Filter -->
+            <div class="mb-8">
+                <div class="flex flex-wrap gap-2" id="genreFilters">
+                    <!-- Genre filters will be loaded here -->
+                </div>
+            </div>
+
+            <!-- Drama Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" id="dramaGrid">
+                <!-- Drama cards will be loaded here -->
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center" id="loadMoreContainer">
+                <!-- Load more button will be added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-800 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <!-- Brand -->
+                <div class="col-span-1 md:col-span-2">
+                    <a href="index.html" class="flex items-center space-x-2 mb-4">
+                        <div class="w-8 h-8 bg-gradient-to-r from-dramabox-amber to-dramabox-coral rounded-lg flex items-center justify-center">
+                            <span class="text-white font-bold text-sm">D</span>
+                        </div>
+                        <span class="text-xl font-display font-bold gradient-text">DramaBox</span>
+                    </a>
+                    <p class="text-gray-400 max-w-md">
+                        Platform streaming drama terlengkap dengan koleksi drama terbaru dan terpopuler dari berbagai genre.
+                    </p>
+                </div>
+
+                <!-- Quick Links -->
+                <div>
+                    <h3 class="text-white font-semibold mb-4">Menu Cepat</h3>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="latest.html" class="text-gray-400 hover:text-dramabox-amber transition-colors">
+                                Drama Terbaru
+                            </a>
+                        </li>
+                        <li>
+                            <a href="popular.html" class="text-gray-400 hover:text-dramabox-amber transition-colors">
+                                Drama Populer
+                            </a>
+                        </li>
+                        <li>
+                            <a href="ranked.html" class="text-gray-400 hover:text-dramabox-amber transition-colors">
+                                Ranking Drama
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Categories -->
+                <div>
+                    <h3 class="text-white font-semibold mb-4">Kategori</h3>
+                    <ul class="space-y-2">
+                        <li><span class="text-gray-400">Romance</span></li>
+                        <li><span class="text-gray-400">Aksi</span></li>
+                        <li><span class="text-gray-400">Komedi</span></li>
+                        <li><span class="text-gray-400">Thriller</span></li>
+                        <li><span class="text-gray-400">Fantasi</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Bottom -->
+            <div class="border-t border-gray-800 mt-8 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-400 text-sm">
+                    © 2024 DramaBox. All rights reserved.
+                </p>
+                <div class="flex items-center space-x-4 mt-4 md:mt-0">
+                    <span class="text-gray-400 text-sm">Made with ❤️ for drama lovers</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="main.js"></script>
+    <script>
+        // Latest page specific functionality
+        let currentPage = 1;
+        let currentFilter = 'all';
+        let hasMore = true;
+        let isLoading = false;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            loadLatestPage();
+        });
+
+        function loadLatestPage() {
+            loadGenreFilters();
+            loadDramas();
+        }
+
+        function loadGenreFilters() {
+            const genres = ['all', 'Thriller', 'Comedy', 'Romance', 'Action', 'Fantasi', 'Drama', 'Mystery', 'Historical'];
+            const container = document.getElementById('genreFilters');
+            
+            container.innerHTML = genres.map(genre => `
+                <button
+                    onclick="setFilter('${genre}')"
+                    class="filter-btn px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+                        currentFilter === genre
+                            ? 'bg-dramabox-amber text-white'
+                            : 'bg-gray-800 text-gray-300 hover:bg-gray-700'
+                    }"
+                >
+                    ${genre === 'all' ? 'Semua' : genre}
+                </button>
+            `).join('');
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            currentPage = 1;
+            hasMore = true;
+            loadGenreFilters();
+            loadDramas();
+        }
+
+        function loadDramas(append = false) {
+            if (isLoading || !hasMore) return;
+            
+            isLoading = true;
+            const container = document.getElementById('dramaGrid');
+            
+            if (!append) {
+                container.innerHTML = '<div class="col-span-full text-center py-8"><div class="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-dramabox-amber"></div></div>';
+            }
+
+            // Simulate API call
+            setTimeout(() => {
+                const mockData = generateMockDramas();
+                
+                if (append) {
+                    container.innerHTML += mockData;
+                } else {
+                    container.innerHTML = mockData;
+                }
+                
+                updateLoadMoreButton();
+                isLoading = false;
+            }, 1000);
+        }
+
+        function generateMockDramas() {
+            const dramas = [
+                { id: '41000104070', title: 'Drama Terbaru 1', rating: 8.5, year: 2024, genre: 'Thriller', episodes: 16, description: 'Drama thriller terbaru dengan plot yang menegangkan.' },
+                { id: '41000104071', title: 'Drama Terbaru 2', rating: 8.3, year: 2024, genre: 'Comedy', episodes: 20, description: 'Komedi ringan yang akan membuat Anda tertawa.' },
+                { id: '41000104072', title: 'Drama Terbaru 3', rating: 8.7, year: 2024, genre: 'Romance', episodes: 18, description: 'Kisah cinta yang menghangatkan hati.' },
+                { id: '41000104073', title: 'Drama Terbaru 4', rating: 8.6, year: 2024, genre: 'Action', episodes: 22, description: 'Aksi seru dengan efek spesialis yang memukau.' },
+                { id: '41000104074', title: 'Drama Terbaru 5', rating: 8.4, year: 2024, genre: 'Fantasi', episodes: 24, description: 'Petualangan fantasi di dunia sihir.' },
+                { id: '41000104075', title: 'Drama Terbaru 6', rating: 8.8, year: 2024, genre: 'Drama', episodes: 26, description: 'Drama keluarga yang menyentuh hati.' },
+                { id: '41000104076', title: 'Drama Terbaru 7', rating: 8.2, year: 2024, genre: 'Mystery', episodes: 20, description: 'Misteri yang penuh teka-teki.' },
+                { id: '41000104077', title: 'Drama Terbaru 8', rating: 8.9, year: 2024, genre: 'Historical', episodes: 30, description: 'Kisah sejarah yang epik.' }
+            ];
+
+            let filtered = dramas;
+            if (currentFilter !== 'all') {
+                filtered = dramas.filter(drama => drama.genre === currentFilter);
+            }
+
+            return filtered.map(drama => createDramaCard(drama)).join('');
+        }
+
+        function updateLoadMoreButton() {
+            const container = document.getElementById('loadMoreContainer');
+            if (hasMore) {
+                container.innerHTML = `
+                    <button onclick="loadMoreDramas()" class="btn-primary px-8 py-3" ${isLoading ? 'disabled' : ''}>
+                        ${isLoading ? 'Loading...' : 'Muat Lebih Banyak'}
+                    </button>
+                `;
+            } else {
+                container.innerHTML = '<p class="text-gray-400">Anda telah mencapai akhir daftar drama terbaru.</p>';
+            }
+        }
+
+        function loadMoreDramas() {
+            currentPage++;
+            if (currentPage >= 3) {
+                hasMore = false;
+            }
+            loadDramas(true);
+        }
+
+        function createDramaCard(drama) {
+            return `
+                <div class="drama-card bg-gray-800 rounded-lg overflow-hidden cursor-pointer group" onclick="goToStream('${drama.id}')">
+                    <div class="relative overflow-hidden">
+                        <div class="h-64 bg-gray-700 shimmer">
+                            <img src="https://images.unsplash.com/photo-${Math.floor(Math.random() * 1000000000000)}?w=400&h=600&fit=crop" 
+                                 alt="${drama.title}" 
+                                 class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                 onerror="this.style.display='none'">
+                        </div>
+                        
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                            <div class="absolute bottom-4 left-4 right-4">
+                                <button class="bg-dramabox-amber hover:bg-amber-600 text-white rounded-full p-3 transform hover:scale-110 transition-all duration-300 mb-2">
+                                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M8 5v14l11-7z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+
+                        ${drama.rating ? `
+                            <div class="absolute top-2 right-2 bg-black/70 backdrop-blur-sm rounded-full px-2 py-1">
+                                <span class="text-dramabox-amber text-sm font-semibold">⭐ ${drama.rating}</span>
+                            </div>
+                        ` : ''}
+
+                        ${drama.episodes ? `
+                            <div class="absolute top-2 left-2 bg-black/70 backdrop-blur-sm rounded-full px-2 py-1">
+                                <span class="text-white text-xs font-medium">${drama.episodes} eps</span>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <div class="p-4">
+                        <h3 class="font-semibold text-white mb-2 line-clamp-2 group-hover:text-dramabox-amber transition-colors">
+                            ${drama.title}
+                        </h3>
+                        
+                        ${drama.description ? `
+                            <p class="text-gray-400 text-sm mb-3 line-clamp-2">
+                                ${drama.description}
+                            </p>
+                        ` : ''}
+
+                        <div class="flex items-center justify-between text-sm text-gray-500">
+                            ${drama.year ? `<span>${drama.year}</span>` : ''}
+                            ${drama.genre ? `<span class="bg-gray-700 px-2 py-1 rounded">${drama.genre}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
+</body>
+</html>

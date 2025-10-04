@@ -1,0 +1,150 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom CSS Variables */
+:root {
+  --dramabox-dark: #1a1a1a;
+  --dramabox-amber: #f59e0b;
+  --dramabox-coral: #fb7185;
+  --dramabox-gray: #6b7280;
+}
+
+/* Base Styles */
+body {
+  font-family: 'Inter', sans-serif;
+  background-color: var(--dramabox-dark);
+  color: white;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--dramabox-amber);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #d97706;
+}
+
+/* Gradient Background Animation */
+.gradient-bg {
+  background: linear-gradient(-45deg, #1a1a1a, #2d2d2d, #1a1a1a, #3d3d3d);
+  background-size: 400% 400%;
+  animation: gradient 8s ease infinite;
+}
+
+/* Card Hover Effects */
+.drama-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+
+.drama-card:hover {
+  transform: translateY(-8px) rotateX(5deg);
+  box-shadow: 0 20px 40px rgba(245, 158, 11, 0.3);
+}
+
+/* Image Ken Burns Effect */
+.ken-burns {
+  animation: ken-burns 20s ease-in-out infinite alternate;
+}
+
+/* Glow Effects */
+.glow-amber {
+  box-shadow: 0 0 20px rgba(245, 158, 11, 0.5);
+}
+
+.glow-coral {
+  box-shadow: 0 0 20px rgba(251, 113, 133, 0.5);
+}
+
+/* Text Effects */
+.gradient-text {
+  background: linear-gradient(45deg, var(--dramabox-amber), var(--dramabox-coral));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Loading Shimmer */
+.shimmer {
+  background: linear-gradient(90deg, #2d2d2d 25%, #3d3d3d 50%, #2d2d2d 75%);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Button Styles */
+.btn-primary {
+  @apply bg-dramabox-amber hover:bg-amber-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105;
+}
+
+.btn-secondary {
+  @apply bg-gray-700 hover:bg-gray-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:scale-105;
+}
+
+/* Form Styles */
+.form-input {
+  @apply bg-gray-800 border border-gray-600 text-white rounded-lg px-4 py-3 focus:outline-none focus:border-dramabox-amber transition-colors;
+}
+
+/* Navigation */
+.nav-link {
+  @apply text-gray-300 hover:text-dramabox-amber transition-colors duration-300 font-medium;
+}
+
+.nav-link.active {
+  @apply text-dramabox-amber font-semibold;
+}
+
+/* Hero Section */
+.hero-gradient {
+  background: linear-gradient(135deg, rgba(26, 26, 26, 0.9), rgba(245, 158, 11, 0.1));
+}
+
+/* Video Player Custom Controls */
+.video-controls {
+  background: linear-gradient(transparent, rgba(0, 0, 0, 0.8));
+}
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  .drama-card:hover {
+    transform: translateY(-4px);
+  }
+  
+  .hero-title {
+    font-size: 2rem;
+  }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus States */
+button:focus,
+a:focus,
+input:focus {
+  outline: 2px solid var(--dramabox-amber);
+  outline-offset: 2px;
+}
