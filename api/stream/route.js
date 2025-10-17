@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "Missing bookid" }, { status: 400 });
   }
 
-  const upstream = `https://api-dramabox.vercel.app/api/dramabox/stream?bookid=${encodeURIComponent(
+  const upstream = `http://web.rsmediazero.my.id/dramabox/api/dramabox/stream?bookid=${encodeURIComponent(
     bookid
   )}&episode=${encodeURIComponent(episode)}`;
 
