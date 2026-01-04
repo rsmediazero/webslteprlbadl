@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'https://dbox-token.vercel.app/api/dramabox';
+const API_BASE_URL = 'https://dbox-token.vercel.app/api';
 
 // Create axios instance
 const api = axios.create({
